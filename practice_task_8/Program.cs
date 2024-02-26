@@ -9,21 +9,25 @@ namespace practice_task_8
         {
             Regex chessCoordReg = new Regex(@"[a-h][1-8]");
 
+            Console.Write("введите размер доски, согласно шахматной записи (до h8 включительно): ");
+            string boardDimentions = Console.ReadLine().ToLower();
+
             Console.Write("Введите позицию первой клетки: ");
             string firstPos = Console.ReadLine().ToLower();
             Console.Write("\nВведите позицию другой клетки: ");
             string secondPos = Console.ReadLine().ToLower();
-
-            char[,] chessBoard = GenerateChessBoard();
             
-            if (!chessCoordReg.IsMatch(firstPos) || !chessCoordReg.IsMatch(secondPos))
+            if (!chessCoordReg.IsMatch(firstPos) || !chessCoordReg.IsMatch(secondPos) || !chessCoordReg.IsMatch(boardDimentions))
             {
                 Console.WriteLine("Введены некорректные координаты!");
                 return;
             }
 
+            boardDimentions = ConvertChessCoordsToNormalCoords(boardDimentions);
             firstPos = ConvertChessCoordsToNormalCoords(firstPos);
             secondPos = ConvertChessCoordsToNormalCoords(secondPos);
+
+            char[,] chessBoard = GenerateChessBoard(boardDimentions);
 
             if (CoordsNotValid(firstPos, secondPos))
             {
@@ -44,13 +48,15 @@ namespace practice_task_8
         }
 
 
-        static char[,] GenerateChessBoard()
+        static char[,] GenerateChessBoard(string dimentions)
         {
-            char[,] board = new char[8, 8];
+            int X = dimentions[0] - '0' + 1;
+            int Y = dimentions[1] - '0' + 1;
+            char[,] board = new char[X, Y];
 
-            for (int i=0; i < 8; i++)
+            for (int i=0; i < X; i++)
             {
-                for (int j = 0; j < 8; j++)
+                for (int j = 0; j < Y; j++)
                 {
                     if ((i+j) % 2 == 0) board[i, j] = '■';
                     else board[i, j] = '¤';
@@ -64,29 +70,30 @@ namespace practice_task_8
             Console.WriteLine();
             Console.WriteLine("-----------------------------------");
             Console.WriteLine("Доска:\n");
-
-            for(int i = 0; i < 8; i++)
-            {
-               
-                Console.Write((char)('a' + i));
-            }
             Console.WriteLine();
 
-            for (int i = 0; i < 8; i++)
+            for (int i = 0; i < board.GetLength(0); i++)
             {
-                for (int j = 0; j < 8; j++)
+                Console.Write((char)('a' + i) + " ");
+
+                for (int j = 0; j < board.GetLength(1); j++)
                 {
                     Console.Write(board[i, j]);
                 }
-                Console.Write($" {i+1}");
                 Console.WriteLine();
+            }
+
+            Console.Write("  ");
+            for (int i = 0; i < board.GetLength(1); i++)
+            {
+                Console.Write($"{i + 1}");
             }
         }
 
         static public string ConvertChessCoordsToNormalCoords(string chessCoords)
         {
-            int xCoord = chessCoords[0] - 'a' + 1;
-            int yCoord = int.Parse(chessCoords[1].ToString());
+            int xCoord = chessCoords[0] - 'a';
+            int yCoord = int.Parse(chessCoords[1].ToString())-1;
 
             return new string(xCoord.ToString() + yCoord.ToString());
         }
