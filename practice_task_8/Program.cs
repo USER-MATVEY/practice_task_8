@@ -29,7 +29,7 @@ namespace practice_task_8
 
             char[,] chessBoard = GenerateChessBoard(boardDimentions);
 
-            if (CoordsNotValid(firstPos, secondPos))
+            if (CoordsNotValid(firstPos, secondPos, chessBoard))
             {
                 Console.WriteLine("Введены некорректные данные!");
                 return;
@@ -98,7 +98,7 @@ namespace practice_task_8
             return new string(xCoord.ToString() + yCoord.ToString());
         }
 
-        static public Boolean CoordsNotValid(string firstPosition, string secondPosition)
+        static public Boolean CoordsNotValid(string firstPosition, string secondPosition, char[,] board)
         {
             int firstX = firstPosition[0] - '0';
             int firstY = firstPosition[1] - '0';
@@ -106,8 +106,8 @@ namespace practice_task_8
             int secondY = secondPosition[1] - '0';
 
             if (firstPosition == secondPosition) { return true; }
-            if ((firstX < 0 || firstY < 0 || firstX > 8 || firstY > 8) &&
-                (secondX < 0 || secondY < 0 || secondX > 8 || secondY > 8))
+            if ((firstX > board.GetLength(0) || firstY > board.GetLength(1)) ||
+                (secondX > board.GetLength(0) || secondY > board.GetLength(1)))
             { return true; }
 
             return false;
